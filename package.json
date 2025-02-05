@@ -2,6 +2,7 @@
   "name": "kajabi-chatbot",
   "version": "1.0.0",
   "description": "Chatbot para practicar español en Kajabi",
+  "type": "module",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
@@ -11,5 +12,6 @@
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "openai": "^4.0.0"
-  }
+  },
+  "license": "MIT"
 }
