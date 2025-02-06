@@ -23,7 +23,7 @@ app.post("/chat", async (req, res) => {
     const { message } = req.body;
 
     const response = await openai.chat.completions.create({
-      model: "gpt-4",
+    model: "gpt-3.5-turbo",
       messages: [
         { role: "system", content: "Eres un asistente que ayuda a practicar español. Solo hablas en presente de indicativo. Si el usuario comete un error, lo corriges y sigues la conversación." },
         { role: "user", content: message },
