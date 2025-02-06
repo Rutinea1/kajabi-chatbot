@@ -1,6 +1,6 @@
 import express from "express";
 import cors from "cors";
-import { Configuration, OpenAIApi } from "openai";
+import OpenAI from "openai";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -14,11 +14,10 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const openai = new OpenAIApi(
-  new Configuration({
-    apiKey: process.env.OPENAI_API_KEY, // Clave de OpenAI desde las variables de entorno
-  })
-);
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+
 
 app.post("/chat", async (req, res) => {
   try {
