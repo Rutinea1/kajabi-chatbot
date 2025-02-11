@@ -15,8 +15,10 @@ app.use(cors());
 app.use(express.json());
 
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
+  apiKey: process.env.OPENROUTER_API_KEY,
+  baseURL: "https://openrouter.ai/api/v1", // Cambia la URL base
 });
+
 
 app.post("/chat", async (req, res) => {
   try {
