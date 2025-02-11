@@ -10,19 +10,21 @@ if (!process.env.OPENROUTER_API_KEY) {
   process.exit(1);
 }
 
+const app = express();  // ← ¡IMPORTANTE! Definir `app` antes de usarlo.
+app.use(cors());
+app.use(express.json());
+
 const openai = new OpenAI({
   apiKey: process.env.OPENROUTER_API_KEY,
-  baseURL: "https://openrouter.ai/api/v1", // URL base de OpenRouter
+  baseURL: "https://openrouter.ai/api/v1",
 });
-
-
 
 app.post("/chat", async (req, res) => {
   try {
     const { message } = req.body;
 
     const response = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo-16k",
+      model: "openai/gpt-3.5-turbo",
       messages: [
         { role: "system", content: "Eres un asistente que ayuda a practicar español. Solo hablas en presente de indicativo. Haces preguntas sobre la rutina diaria y corriges errores." },
         { role: "user", content: message },
@@ -31,12 +33,11 @@ app.post("/chat", async (req, res) => {
 
     res.json({ reply: response.choices[0].message.content });
   } catch (error) {
-    console.error("Error en la solicitud a OpenAI:", error);
+    console.error("Error en la solicitud a OpenRouter:", error);
     res.status(500).json({ error: "Error al procesar la solicitud." });
   }
 });
 
-// Solución del error en app.listen
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Servidor funcionando en el puerto ${PORT}`);
