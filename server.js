@@ -1,6 +1,6 @@
 import express from "express";
 import cors from "cors";
-import OpenAI from "openai"; // Importación correcta de OpenAI
+import OpenAI from "openai";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -15,7 +15,7 @@ app.use(cors());
 app.use(express.json());
 
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY, // Clave de OpenAI desde variables de entorno
+  apiKey: process.env.OPENAI_API_KEY,
 });
 
 app.post("/chat", async (req, res) => {
@@ -23,9 +23,9 @@ app.post("/chat", async (req, res) => {
     const { message } = req.body;
 
     const response = await openai.chat.completions.create({
-    model: "gpt-3.5-turbo",
+      model: "gpt-3.5-turbo",
       messages: [
-        { role: "system", content: "Eres un asistente que ayuda a practicar español. Solo hablas en presente de indicativo. Si el usuario comete un error, lo corriges y sigues la conversación." },
+        { role: "system", content: "Eres un asistente que ayuda a practicar español. Solo hablas en presente de indicativo. Haces preguntas sobre la rutina diaria y corriges errores." },
         { role: "user", content: message },
       ],
     });
@@ -37,4 +37,4 @@ app.post("/chat", async (req, res) => {
   }
 });
 
-app.listen(3000, () => console.log("Servidor funcionando en http://localhost:3000"));
+app.listen(3000, () => console.log("Servidor f
