@@ -5,19 +5,16 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-if (!process.env.OPENAI_API_KEY) {
-  console.error("Error: OPENAI_API_KEY no está definido en el archivo .env");
+if (!process.env.OPENROUTER_API_KEY) {
+  console.error("Error: OPENROUTER_API_KEY no está definido en el archivo .env");
   process.exit(1);
 }
 
-const app = express();
-app.use(cors());
-app.use(express.json());
-
 const openai = new OpenAI({
   apiKey: process.env.OPENROUTER_API_KEY,
-  baseURL: "https://openrouter.ai/api/v1", // Cambia la URL base
+  baseURL: "https://openrouter.ai/api/v1", // URL base de OpenRouter
 });
+
 
 
 app.post("/chat", async (req, res) => {
