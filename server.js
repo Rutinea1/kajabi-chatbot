@@ -15,8 +15,8 @@ app.use(cors());
 app.use(express.json());
 
 const openai = new OpenAI({
-  apiKey: process.env.OPENROUTER_API_KEY,
-  baseURL: "https://openrouter.ai/api/v1",
+  apiKey: process.env.TOGETHER_API_KEY,
+  baseURL: "https://api.together.xyz/v1",
 });
 
 app.post("/chat", async (req, res) => {
@@ -24,7 +24,7 @@ app.post("/chat", async (req, res) => {
     const { message } = req.body;
 
     const response = await openai.chat.completions.create({
-      model: "mistralai/mixtral-8x7b-instruct", 
+     model: "togethercomputer/mistral-7b-instruct",
 
       messages: [
         { role: "system", content: "Eres un asistente que ayuda a practicar español. Solo hablas en presente de indicativo. Haces preguntas sobre la rutina diaria y corriges errores." },
