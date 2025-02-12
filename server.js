@@ -10,19 +10,21 @@ if (!process.env.TOGETHER_API_KEY) {
   process.exit(1);
 }
 
+const app = express();  // ← ¡IMPORTANTE! Definir `app` antes de usarlo.
+app.use(cors());
+app.use(express.json());
+
 const openai = new OpenAI({
   apiKey: process.env.TOGETHER_API_KEY,
   baseURL: "https://api.together.xyz/v1",
 });
-
 
 app.post("/chat", async (req, res) => {
   try {
     const { message } = req.body;
 
     const response = await openai.chat.completions.create({
-     model: "togethercomputer/mistral-7b-instruct",
-
+      model: "togethercomputer/mistral-7b-instruct",
       messages: [
         { role: "system", content: "Eres un asistente que ayuda a practicar español. Solo hablas en presente de indicativo. Haces preguntas sobre la rutina diaria y corriges errores." },
         { role: "user", content: message },
@@ -31,7 +33,7 @@ app.post("/chat", async (req, res) => {
 
     res.json({ reply: response.choices[0].message.content });
   } catch (error) {
-    console.error("Error en la solicitud a OpenRouter:", error);
+    console.error("Error en la solicitud a Together AI:", error);
     res.status(500).json({ error: "Error al procesar la solicitud." });
   }
 });
