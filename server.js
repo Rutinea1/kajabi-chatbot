@@ -42,3 +42,21 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Servidor funcionando en el puerto ${PORT}`);
 });
+app.post("/corregir", async (req, res) => {
+  try {
+    const { texto } = req.body;
+
+    const response = await openai.chat.completions.create({
+      model: "meta-llama/Llama-3-8b-chat-hf", // Modelo usado para corrección
+      messages: [
+        { role: "system", content: "Corrige errores gramaticales y ortográficos del siguiente texto en español, sin cambiar su significado." },
+        { role: "user", content: texto },
+      ],
+    });
+
+    res.json({ correccion: response.choices[0].message.content });
+  } catch (error) {
+    console.error("Error en la solicitud de corrección:", error);
+    res.status(500).json({ error: "Error al procesar la solicitud." });
+  }
+});
