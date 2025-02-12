@@ -67,12 +67,13 @@ app.post("/rellena-huecos", async (req, res) => {
     const response = await openai.chat.completions.create({
       model: "meta-llama/Llama-3-8b-chat-hf",
       messages: [
-        { role: "system", content: "Corrige los verbos en presente de indicativo en los siguientes huecos sin cambiar el significado de la oración. Muestra solo la oración corregida." },
+        { role: "system", content: "Corrige los verbos en presente de indicativo en los siguientes huecos y devuelve el resultado en formato JSON, manteniendo el índice de cada oración." },
         { role: "user", content: JSON.stringify(oraciones) },
       ],
+      response_format: "json"
     });
 
-    res.json({ correcciones: response.choices[0].message.content });
+    res.json({ correcciones: JSON.parse(response.choices[0].message.content) });
   } catch (error) {
     console.error("Error en la autocorrección:", error);
     res.status(500).json({ error: "Error al procesar la solicitud." });
