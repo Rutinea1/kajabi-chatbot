@@ -67,27 +67,33 @@ app.post("/rellena-huecos", async (req, res) => {
     const response = await openai.chat.completions.create({
       model: "meta-llama/Llama-3-8b-chat-hf",
       messages: [
-        { role: "system", content: `Corrige los verbos en presente de indicativo en los siguientes huecos y devuelve exclusivamente un JSON sin texto adicional. Sigue este formato:
+        { 
+          role: "system", 
+          content: `Corrige los verbos en presente de indicativo en los siguientes huecos y devuelve SOLO un JSON sin explicaciones ni comentarios. Formato esperado:
 {
   "1": "Yo hablo (hablar)",
   "2": "María come (comer)"
 }
-No expliques nada ni añadas comentarios, solo devuelve el JSON puro.` },
+No añadas explicaciones ni comentarios, solo devuelve el JSON puro, sin texto adicional.` 
+        },
         { role: "user", content: JSON.stringify(oraciones) },
       ],
-      temperature: 0, // Reducir creatividad para evitar respuestas fuera de formato
-      max_tokens: 200, // Limitar el tamaño de la respuesta
+      temperature: 0,
+      max_tokens: 300,
     });
 
-    // Extraer la respuesta de la IA y limpiarla
+    // Extraer respuesta de la IA y limpiarla
     let respuestaIA = response.choices[0].message.content.trim();
 
-    // Intentar encontrar la parte JSON en la respuesta
+    console.log("Respuesta completa de la IA:", respuestaIA); // <-- DEBUG: Mostrar la respuesta de la IA en los logs
+
+    // Intentar encontrar la parte JSON correcta
     const inicioJSON = respuestaIA.indexOf("{");
     const finJSON = respuestaIA.lastIndexOf("}") + 1;
 
     if (inicioJSON === -1 || finJSON === 0) {
-      throw new Error("La IA no devolvió un JSON válido.");
+      console.error("Error: La IA no devolvió un JSON válido. Respuesta recibida:", respuestaIA);
+      return res.status(500).json({ error: "La IA no devolvió un JSON válido.", rawResponse: respuestaIA });
     }
 
     const jsonLimpio = respuestaIA.substring(inicioJSON, finJSON);
@@ -97,55 +103,8 @@ No expliques nada ni añadas comentarios, solo devuelve el JSON puro.` },
     try {
       correcciones = JSON.parse(jsonLimpio);
     } catch (error) {
-      console.error("Error al parsear la respuesta:", error);
-      return res.status(500).json({ error: "La IA no devolvió un JSON válido." });
-    }
-
-    res.json({ correcciones });
-  } catch (error) {
-    console.error("Error en la autocorrección:", error);
-    res.status(500).json({ error: "Error al procesar la solicitud." });
-  }
-});
-app.post("/rellena-huecos", async (req, res) => {
-  try {
-    const { oraciones } = req.body;
-
-    const response = await openai.chat.completions.create({
-      model: "meta-llama/Llama-3-8b-chat-hf",
-      messages: [
-        { role: "system", content: `Corrige los verbos en presente de indicativo en los siguientes huecos y devuelve exclusivamente un JSON sin texto adicional. Sigue este formato:
-{
-  "1": "Yo hablo (hablar)",
-  "2": "María come (comer)"
-}
-No expliques nada ni añadas comentarios, solo devuelve el JSON puro.` },
-        { role: "user", content: JSON.stringify(oraciones) },
-      ],
-      temperature: 0, // Reducir creatividad para evitar respuestas fuera de formato
-      max_tokens: 200, // Limitar el tamaño de la respuesta
-    });
-
-    // Extraer la respuesta de la IA y limpiarla
-    let respuestaIA = response.choices[0].message.content.trim();
-
-    // Intentar encontrar la parte JSON en la respuesta
-    const inicioJSON = respuestaIA.indexOf("{");
-    const finJSON = respuestaIA.lastIndexOf("}") + 1;
-
-    if (inicioJSON === -1 || finJSON === 0) {
-      throw new Error("La IA no devolvió un JSON válido.");
-    }
-
-    const jsonLimpio = respuestaIA.substring(inicioJSON, finJSON);
-
-    // Intentar parsear el JSON
-    let correcciones;
-    try {
-      correcciones = JSON.parse(jsonLimpio);
-    } catch (error) {
-      console.error("Error al parsear la respuesta:", error);
-      return res.status(500).json({ error: "La IA no devolvió un JSON válido." });
+      console.error("Error al parsear la respuesta. Respuesta recibida:", respuestaIA);
+      return res.status(500).json({ error: "Error al convertir la respuesta en JSON.", rawResponse: respuestaIA });
     }
 
     res.json({ correcciones });
