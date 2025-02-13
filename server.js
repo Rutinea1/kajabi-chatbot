@@ -113,3 +113,8 @@ No añadas explicaciones ni comentarios, solo devuelve el JSON puro, sin texto a
     res.status(500).json({ error: "Error al procesar la solicitud." });
   }
 });
+
+    console.error("Error en la autocorrección:", error);
+    res.status(500).json({ error: "Error al procesar la solicitud." });
+  }
+});
