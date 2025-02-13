@@ -69,17 +69,17 @@ app.post("/rellena-huecos", async (req, res) => {
       messages: [
         { 
           role: "system", 
-          content: `Corrige los verbos en presente de indicativo en los siguientes huecos y devuelve SOLO un JSON sin explicaciones ni comentarios. Formato esperado:
+          content: `Corrige los verbos en presente de indicativo en los siguientes huecos y devuelve SOLO un JSON en este formato:
 {
   "1": "Yo hablo (hablar)",
   "2": "María come (comer)"
 }
-No añadas explicaciones ni comentarios, solo devuelve el JSON puro, sin texto adicional.` 
+No añadas explicaciones ni comentarios, solo el JSON puro.` 
         },
-        { role: "user", content: JSON.stringify(oraciones) },
+        { role: "user", content: JSON.stringify(oraciones) }
       ],
       temperature: 0,
-      max_tokens: 300,
+      max_tokens: 300
     });
 
     // Extraer respuesta de la IA y limpiarla
@@ -108,12 +108,8 @@ No añadas explicaciones ni comentarios, solo devuelve el JSON puro, sin texto a
     }
 
     res.json({ correcciones });
+    
   } catch (error) {
-    console.error("Error en la autocorrección:", error);
-    res.status(500).json({ error: "Error al procesar la solicitud." });
-  }
-});
-
     console.error("Error en la autocorrección:", error);
     res.status(500).json({ error: "Error al procesar la solicitud." });
   }
